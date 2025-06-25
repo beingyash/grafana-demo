@@ -1,0 +1,12 @@
+apiVersion: 1
+datasources:
+  - name: env1
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+
+  - name: env2
+    type: prometheus
+    access: proxy
+    url: http://prometheus2:9090

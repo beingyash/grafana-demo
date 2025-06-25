@@ -1,0 +1,57 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  prometheus2:
+    image: prom/prometheus
+    container_name: prometheus2
+    volumes:
+      - ./prometheus2.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9091:9090"
+
+  node_exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+    ports:
+      - "9100:9100"
+
+  metrics_app_1:
+    image: python:3.10-slim
+    working_dir: /app
+    volumes:
+      - ./app_metrics.py:/app/app_metrics.py
+    environment:
+      - APP_NAME=service-a
+    command: >
+      sh -c "pip install flask prometheus_client && python app_metrics.py"
+    ports:
+      - "8001:8000"
+
+  metrics_app_2:
+    image: python:3.10-slim
+    working_dir: /app
+    volumes:
+      - ./app_metrics.py:/app/app_metrics.py
+    environment:
+      - APP_NAME=service-b
+    command: >
+      sh -c "pip install flask prometheus_client && python app_metrics.py"
+    ports:
+      - "8002:8000"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
