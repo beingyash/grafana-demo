@@ -5,6 +5,7 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data1:/prometheus
     ports:
       - "9090:9090"
 
@@ -13,6 +14,7 @@ services:
     container_name: prometheus2
     volumes:
       - ./prometheus2.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data2:/prometheus
     ports:
       - "9091:9090"
 
@@ -32,7 +34,7 @@ services:
     command: >
       sh -c "pip install flask prometheus_client && python app_metrics.py"
     ports:
-      - "8001:8000"
+      - "8001:5000"
 
   metrics_app_2:
     image: python:3.10-slim
@@ -44,14 +46,15 @@ services:
     command: >
       sh -c "pip install flask prometheus_client && python app_metrics.py"
     ports:
-      - "8002:8000"
+      - "8002:5000"
 
-  grafana:
+  grafana-demo:
     image: grafana/grafana
-    container_name: grafana
+    container_name: grafana-demo
     ports:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=volkovlabs-variable-panel,volkovlabs-echarts-panel,yesoreyeram-infinity-datasource
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning

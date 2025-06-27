@@ -10,3 +10,11 @@ datasources:
     type: prometheus
     access: proxy
     url: http://prometheus2:9090
+
+  - name: infinity
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    url:  # This URL is just a placeholder, as Infinity often uses direct URLs in queries
+    isDefault: false
+    version: 1
+    editable: true
